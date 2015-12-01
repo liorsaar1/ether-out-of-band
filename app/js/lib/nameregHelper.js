@@ -12,11 +12,11 @@ module.exports = {
     getAddressOf: function(contractName) {
         var namereg = this.getInstance();
         return new Promise(function(resolve, reject) {
-            namereg.addressOf(contractName, function(err, address) {
+            namereg.addressOf(contractName, function(error, address) {
                 var TAG = "namereg.addressOf:" + contractName + ":";
-                if (err) {
-                    console.log(TAG, "ERROR", err);
-                    return reject(Error(err));
+                if (error) {
+                    console.log(TAG, error);
+                    return reject(error);
                 }
                 if (address == 0x0) {
                     console.log(TAG, "NOT FOUND");

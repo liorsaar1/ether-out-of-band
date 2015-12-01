@@ -9,9 +9,6 @@
 <script type="text/javascript">
     console.log("loading js");
     /*global getWeb3*/
-      
-
-    
 
     var web3;
     var nameregHelper;
@@ -19,16 +16,38 @@
     function onload() {
         console.log("onload");
         web3 = getWeb3();
-
         nameregHelper = new NameregHelper(web3);
-
+        
         uiWeb3(web3);
+        
+        setup();
     }
+    
+    //===============================================
+    // setup
+    //===============================================
+    function setup() {
+        nameregHelper.getAddressOf('Oracle').then(function(address) {
+            //setOracle(address);
+            return nameregHelper.getAddressOf('Wallet');
+        }, abort).then(function(address) {
+            //setWallet(address);
+        }, abort);
+    }
+    
+    function abort(error) {
+        console.log( "ABORT", error);
+        uiError(error);
+    }    
         
     function uiWeb3(web3) {
         //console.log(web3);
         document.getElementById('sandbox').innerText =  web3.currentProvider.host;
         document.getElementById('status').innerText = "connected";
+    }
+    
+    function uiError(error) {
+        document.getElementById('status').innerText = error.toString();
     }
 
 </script>
