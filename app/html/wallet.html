@@ -83,12 +83,16 @@
             console.log(TAG, "Feedback", result.args);
         });
         
-        // console.log( "setWallet: setOracle", oracleInstance.address);
-        // walletInstance.setOracle(oracleInstance.address, function(err, result){
-        //     console.log(err, result);
-        // });
-        // walletInstance.setPhone("415-666-7777");
-        // walletInstance.spend(1627);
+        console.log( "setWallet: setOracle", oracleInstance.address);
+        walletInstance.setOracle(oracleInstance.address); // FIXME - not waiting to be mined
+    }
+    
+    function walletSetPhone(phone) {
+        walletInstance.setPhone(phone);
+    }
+    
+    function walletSpend(amount) {
+        walletInstance.spend(amount);
     }
     
     function setWalletParams() {
@@ -101,13 +105,11 @@
     function mine( func, arg ) {
         return new Promise( function(resolve, reject) {
             func(arg, function(error, tx) {
-                reject( "XXX");
                 resolve( tx );
             });
         });
     }
-    
-    
+
     
     function abort(error) {
         console.log( "ABORT", error);
@@ -115,41 +117,67 @@
         if (error instanceof Error)
             throw error;
         throw new Error(error);
-    }    
-        
+    }   
+    
+    //=======================================
+    // UI
+    //=======================================
     function uiWeb3(web3) {
         //console.log(web3);
-        document.getElementById('sandbox').innerText =  web3.currentProvider.host;
-        document.getElementById('status').innerText = "connected";
+        document.getElementById('uiSandbox').innerText =  web3.currentProvider.host;
+        document.getElementById('uiStatus').innerText = "connected";
     }
     
     function uiError(error) {
         document.getElementById('status').innerText = error.toString();
+    }
+    
+    //=======================================
+    // events
+    //=======================================
+    function onClickPhone() {
+        var value = document.getElementById('phoneValue').value;
+        walletSetPhone(value);
+    }
+    
+    function onClickSpend() {
+        var value = document.getElementById('spendValue').value;
+        walletSpend(value);
     }
 
 </script>
 </head>
 <body onload="onload()">
     <h1>Wallet</h1>
-    <div id="web3ui">
-        Sandbox:
-        <div id="sandbox">---</div></br>
-        Status:
-        <div id="status">---</div></br>
+    <div id="uiWeb3">
+        <table>
+            <tr>
+                <td>Sandbox: </td>
+                <td>
+                    <div id="uiSandbox">---</div>
+                </td>
+            </tr>
+            <tr>
+                <td>Status: </td>
+                <td>
+                    <div id="uiStatus">---</div>
+                </td>
+            </tr>
+        </table>
     </div>
+    </br>
     
-    <div id="ui">
-        <div>
-            <button type="button" onClick="setEventWatchers();">read</button>
-        </div>
-        <div id="readResult">???</div>
-        
-        <div>
-            <button type="button" onClick="spend();">write</button>
-        </div>
-        <div>
-            <input type="number" id="writeValue"></input>
-        </div>
+    <div id="uiWallet">
+        <table>
+            <tr>
+                <td><button type="button" onClick="onClickPhone();">Set Phone</button></td>
+                <td><input type="text" id="phoneValue"/ value="415-810-5251"></td>
+            </tr>
+            <tr>
+                <td><button type="button" onClick="onClickSpend();">Spend</button></td>
+                <td><input type="text" id="spendValue" value="1234"/></td>
+            </tr>
+        </table>
     </div>
 
 </body>
