@@ -32,8 +32,11 @@
         nameregHelper.getAddressOf('Oracle').then(function(address) {
             setOracle(address);
             return nameregHelper.getAddressOf('Wallet');
-        }, abort).then(function(address) {
+        }, abort).then( function(address) {
             setWallet(address);
+            return setWalletParams();
+        }, abort).then( function(result) {
+            console.log( "#########################################" + result);
         }, abort);
     }
     
@@ -80,17 +83,38 @@
             console.log(TAG, "Feedback", result.args);
         });
         
-        console.log( "setWallet: setOracle", oracleInstance.address);
-        walletInstance.setOracle(oracleInstance.address, function(err, result){
-            console.log(err, result);
-        });
-        walletInstance.setPhone("415-666-7777");
-        walletInstance.spend(1627);
+        // console.log( "setWallet: setOracle", oracleInstance.address);
+        // walletInstance.setOracle(oracleInstance.address, function(err, result){
+        //     console.log(err, result);
+        // });
+        // walletInstance.setPhone("415-666-7777");
+        // walletInstance.spend(1627);
     }
+    
+    function setWalletParams() {
+        return mine( walletInstance.setOracle, oracleInstance.address ).then( function(result){
+            console.log( "2222 " + result);
+            return ("done 2222");
+        }, abort);
+    }
+    
+    function mine( func, arg ) {
+        return new Promise( function(resolve, reject) {
+            func(arg, function(error, tx) {
+                reject( "XXX");
+                resolve( tx );
+            });
+        });
+    }
+    
+    
     
     function abort(error) {
         console.log( "ABORT", error);
         uiError(error);
+        if (error instanceof Error)
+            throw error;
+        throw new Error(error);
     }    
         
     function uiWeb3(web3) {
