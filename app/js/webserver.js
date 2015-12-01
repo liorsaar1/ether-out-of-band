@@ -24,10 +24,7 @@ function requestListener(request, response) {
         return;
     }
     // STATIC
-    if (handleStatic(request, response)) {
-        return;
-    }
-    response404(request.url, response);
+    handleStatic(request, response);
 }
 
 function handleRest(request, response) {
@@ -38,11 +35,7 @@ function handleRest(request, response) {
 }
 
 function handleStatic(request, response) {
-    if (request.url == "/wallet.html") {
-        loadStaticFile("../html" + request.url, response);
-        return true;
-    }
-    return false;
+    loadStaticFile(request.url, response);
 }
 
 //=====================================
