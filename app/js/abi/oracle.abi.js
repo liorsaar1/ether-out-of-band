@@ -80,6 +80,5 @@ function oracleAbi() {
     "type": "event"
   }
 ]
-
 ;return abi;
 }

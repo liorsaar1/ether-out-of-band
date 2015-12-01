@@ -3,6 +3,7 @@ var http = require('http');
 var fs = require("fs");
 var url = require("url");
 var path = require("path");
+var querystring = require('querystring');
 
 const PORT=8080; 
 
@@ -28,8 +29,9 @@ function requestListener(request, response) {
 }
 
 function handleRest(request, response) {
-    if (request.url == "/wallet") {
-        return do_wallet(request, response);
+//    console.log("REST: request", request);
+    if (request.url == "/twilio/request") {
+        return do_twilio_request(request, response);
     }
     return false;
 }
@@ -41,9 +43,42 @@ function handleStatic(request, response) {
 //=====================================
 // REST 
 //=====================================
-function do_wallet(request, response) {
-    response.end('Wallet !!!');
+function do_twilio_request(request, response) {
+    console.log("SERVER: handleRequest", request.method);
+    if (request.method != "POST") {
+        return false;
+    }
+
+    var body = '';
+
+    request.on('data', function(chunk) {
+        console.log("Received body data:");
+        body += chunk.toString();
+    });
+
+    request.on('end', function() {
+        console.log("Received END:");
+        // empty 200 OK response for now
+        response.writeHead(200, "OK", {
+            'Content-Type': 'text/html'
+        });
+        response.end();
+
+        var decodedBody = querystring.parse(body);
+        //console.log("decodedBody:", decodedBody.Body);
+        doSmsResponse(decodedBody);
+    });
     return true;
+}
+
+function doSmsResponse(incomingSms) {
+    var reply = incomingSms.Body.toLowerCase();
+    console.log("doSmsResponse:", reply);
+    if (reply != "yes") {
+        console.log("WARNING: spend declined: !!!");
+        return;
+    }
+    oracleInstance.confirmed("abcd", 1234);
 }
 
 //=====================================
@@ -102,7 +137,7 @@ function response500(response, error) {
     //=======================================
     var Web3 = require('web3');
     var web3 = new Web3();
-    var providerUrl = 'http://lior.ide.tmp.ether.camp:8555/sandbox/6a384f23526eb3f66cd063a36b3bf01f0de8d534'
+    var providerUrl = 'http://lior.ide.tmp.ether.camp:8555/sandbox/d6234b8d8511f0dc28828657d82c873e7668f9aa'
     web3.setProvider(new web3.providers.HttpProvider(providerUrl));
     web3.eth.defaultAccount = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826";
     
@@ -202,6 +237,6 @@ function sendSms(body) {
             console.log("ERROR: sendSms", err);
             return;
         }
-        console.log(message);
+        //console.log(message);
     });
 }

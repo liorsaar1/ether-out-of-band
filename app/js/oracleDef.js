@@ -87,4 +87,4 @@ var oracleAbi =
     "name": "Notify",
     "type": "event"
   }
-]
+];

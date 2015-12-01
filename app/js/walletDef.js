@@ -37,6 +37,18 @@ var walletAbi =
     "constant": false,
     "inputs": [
       {
+        "name": "value",
+        "type": "uint256"
+      }
+    ],
+    "name": "spendConfirmed",
+    "outputs": [],
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
         "name": "oracleAddress",
         "type": "address"
       }
