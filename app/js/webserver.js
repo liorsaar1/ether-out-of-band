@@ -137,6 +137,8 @@ function response500(response, error) {
     function oracleNotified(args) {
         var TAG = "Oracle";
         console.log(TAG, "Notify", args);
+        var body = "Trying to spend " + args.value;
+        sendSms(body);
     }
     
 
@@ -170,4 +172,36 @@ function response500(response, error) {
     function abort(error) {
         console.log( "ABORT", error);
         process.exit();
-    }    
+    }
+
+
+// Your accountSid and authToken from twilio.com/user/account
+var accountSid = 'AC4f6908d70926e4b46f7c392280a513fe';
+var authToken = "deeab5e8ac7bca2afdbef7098f425572";
+var fromPhoneNumber = "+15005550006";
+var toPhoneNumber = "+14158105251";
+
+var production = true;
+if (production) {
+    accountSid = 'AC84a35dc4f573efe9bb9e32e7c0cac63d';
+    authToken = "db322bdc75327a69decea7b89d1b441f";
+    fromPhoneNumber = "+16505420016";
+}
+
+
+var client = require('twilio')(accountSid, authToken);
+ 
+function sendSms(body) {
+    console.log("sendSms", body);
+    client.messages.create({
+        body: body,
+        to: toPhoneNumber,
+        from: fromPhoneNumber
+    }, function(err, message) {
+        if (err) {
+            console.log("ERROR: sendSms", err);
+            return;
+        }
+        console.log(message);
+    });
+}
