@@ -4,6 +4,8 @@
 <head>
 <script type="text/javascript" src="../vendor/web3.js/dist/web3.js"></script>
 <script type="text/javascript" src="../js/abi/namereg.abi.js"></script>
+<script type="text/javascript" src="../js/abi/oracle.abi.js"></script>
+<script type="text/javascript" src="../js/abi/wallet.abi.js"></script>
 <script type="text/javascript" src="../js/lib/web3Helper.js"></script>
 <script type="text/javascript" src="../js/lib/nameregHelper.js"></script>
 <script type="text/javascript">
@@ -28,11 +30,62 @@
     //===============================================
     function setup() {
         nameregHelper.getAddressOf('Oracle').then(function(address) {
-            //setOracle(address);
+            setOracle(address);
             return nameregHelper.getAddressOf('Wallet');
         }, abort).then(function(address) {
-            //setWallet(address);
+            setWallet(address);
         }, abort);
+    }
+    
+    //=======================================
+    // Oracle
+    //=======================================
+    var oracleInstance;
+    var oracleNotify;
+    function setOracle(address) {
+        console.log( "setOracle:" + address);
+        var abi = oracleAbi();
+        oracleInstance = web3.eth.contract(abi).at(address);
+        
+        // watch for Notify
+        oracleNotify = oracleInstance.Notify();
+        oracleNotify.watch( function(err, result) {
+            var TAG = "oracleNotify.watch: ";
+            if (err) {
+                console.log(TAG, "ERROR", err);
+                return;
+            }
+            console.log(TAG, "Notify", result.args);
+        });
+    }
+    
+    //=======================================
+    // Wallet
+    //=======================================
+    var walletInstance;
+    var walletFeedback;
+    function setWallet(address) {
+        console.log( "setWallet:", address);
+        var abi = walletAbi();
+        walletInstance = web3.eth.contract(abi).at(address);
+        
+        // watch for Feedback
+        walletFeedback = walletInstance.Feedback();
+        walletFeedback.watch( function(err, result) {
+            var TAG = "Feedback.watch: ";
+            if (err) {
+                console.log(TAG, "ERROR", err);
+                return;
+            }
+            console.log(TAG, "Feedback", result.args);
+        });
+        
+        console.log( "setWallet: setOracle", oracleInstance.address);
+        walletInstance.setOracle(oracleInstance.address, function(err, result){
+            console.log(err, result);
+        });
+        walletInstance.setPhone("415-666-7777");
+        walletInstance.spend(1627);
     }
     
     function abort(error) {

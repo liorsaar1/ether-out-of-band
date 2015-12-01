@@ -1,8 +1,9 @@
-var module = {};
+/*global nameregAbi*/
+var module = {}; // hack - trying to keep nodejs syntax
 
 module.exports = {
     getContract: function() {
-        return this.web3.eth.contract(nameregAbi);
+        return this.web3.eth.contract(nameregAbi());
     },
 
     getInstance: function() {
@@ -37,79 +38,3 @@ NameregHelper = function(web3) {
 NameregHelper.prototype = module.exports;
 
 
-
-var nameregAbi = [{
-    "constant": false,
-    "inputs": [],
-    "name": "kill",
-    "outputs": [],
-    "type": "function"
-}, {
-    "constant": true,
-    "inputs": [{
-        "name": "name",
-        "type": "bytes32"
-    }],
-    "name": "addressOf",
-    "outputs": [{
-        "name": "addr",
-        "type": "address"
-    }],
-    "type": "function"
-}, {
-    "constant": false,
-    "inputs": [{
-        "name": "name",
-        "type": "bytes32"
-    }],
-    "name": "register",
-    "outputs": [],
-    "type": "function"
-}, {
-    "constant": false,
-    "inputs": [],
-    "name": "unregister",
-    "outputs": [],
-    "type": "function"
-}, {
-    "constant": true,
-    "inputs": [{
-        "name": "addr",
-        "type": "address"
-    }],
-    "name": "nameOf",
-    "outputs": [{
-        "name": "name",
-        "type": "bytes32"
-    }],
-    "type": "function"
-}, {
-    "inputs": [],
-    "type": "constructor"
-}, {
-    "anonymous": false,
-    "inputs": [{
-        "indexed": true,
-        "name": "addr",
-        "type": "address"
-    }, {
-        "indexed": false,
-        "name": "name",
-        "type": "bytes32"
-    }],
-    "name": "Register",
-    "type": "event"
-}, {
-    "anonymous": false,
-    "inputs": [{
-        "indexed": true,
-        "name": "addre",
-        "type": "address"
-    }, {
-        "indexed": false,
-        "name": "name",
-        "type": "bytes32"
-    }],
-    "name": "Unregister",
-    "type": "event"
-}];
