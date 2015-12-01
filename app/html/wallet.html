@@ -1,0 +1,60 @@
+<!doctype>
+<html>
+
+<head>
+<script type="text/javascript" src="../vendor/web3.js/dist/web3.js"></script>
+<script type="text/javascript" src="../js/abi/namereg.abi.js"></script>
+<script type="text/javascript" src="../js/lib/web3Helper.js"></script>
+<script type="text/javascript" src="../js/lib/nameregHelper.js"></script>
+<script type="text/javascript">
+    console.log("loading js");
+    /*global getWeb3*/
+      
+
+    
+
+    var web3;
+    var nameregHelper;
+
+    function onload() {
+        console.log("onload");
+        web3 = getWeb3();
+
+        nameregHelper = new NameregHelper(web3);
+
+        uiWeb3(web3);
+    }
+        
+    function uiWeb3(web3) {
+        //console.log(web3);
+        document.getElementById('sandbox').innerText =  web3.currentProvider.host;
+        document.getElementById('status').innerText = "connected";
+    }
+
+</script>
+</head>
+<body onload="onload()">
+    <h1>Wallet</h1>
+    <div id="web3ui">
+        Sandbox:
+        <div id="sandbox">---</div></br>
+        Status:
+        <div id="status">---</div></br>
+    </div>
+    
+    <div id="ui">
+        <div>
+            <button type="button" onClick="setEventWatchers();">read</button>
+        </div>
+        <div id="readResult">???</div>
+        
+        <div>
+            <button type="button" onClick="spend();">write</button>
+        </div>
+        <div>
+            <input type="number" id="writeValue"></input>
+        </div>
+    </div>
+
+</body>
+</html>
