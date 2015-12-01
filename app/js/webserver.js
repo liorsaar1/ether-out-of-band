@@ -1,18 +1,17 @@
-
 var http = require('http');
 var fs = require("fs");
 var url = require("url");
 var path = require("path");
 var querystring = require('querystring');
 
-const PORT=8080; 
+const PORT = 8080;
 
 //=====================================
 // Server
 //=====================================
 var server = http.createServer(requestListener);
 
-server.listen(PORT, function(){
+server.listen(PORT, function() {
     //Callback triggered when server is successfully listening. Hurray!
     console.log("Server listening on: http://localhost:%s", PORT);
 });
@@ -29,7 +28,7 @@ function requestListener(request, response) {
 }
 
 function handleRest(request, response) {
-//    console.log("REST: request", request);
+    //    console.log("REST: request", request);
     if (request.url == "/twilio/request") {
         return do_twilio_request(request, response);
     }
@@ -131,54 +130,55 @@ function response500(response, error) {
 
 
 
-    
-    //=======================================
-    // web3
-    //=======================================
-    var Web3 = require('web3');
-    var web3 = new Web3();
-    var providerUrl = 'http://lior.ide.tmp.ether.camp:8555/sandbox/d6234b8d8511f0dc28828657d82c873e7668f9aa'
-    web3.setProvider(new web3.providers.HttpProvider(providerUrl));
-    web3.eth.defaultAccount = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826";
-    
-    //=======================================
-    // namereg
-    //=======================================
-    var NameReg = require('./nameregDef');
-    var namereg = NameReg.getInstance(web3);
 
-    //=======================================
-    // Oracle
-    //=======================================
-    var Oracle = require('./oracleDef');
-    var oracleInstance;
-    var oracleNotify;
-    function setOracle(address) {
-        console.log( "setOracle:" + address);
-        oracleInstance = Oracle.getInstance(web3, address);
-        
-        // watch for Notify
-        oracleNotify = oracleInstance.Notify();
-        oracleNotify.watch( function(err, result) {
-            var TAG = "oracleNotify.watch: ";
-            if (err) {
-                console.log(TAG, "ERROR", err);
-                return;
-            }
-            oracleNotified(result.args);
-        });
-    }
-    
-    function oracleNotified(args) {
-        var TAG = "Oracle";
-        console.log(TAG, "Notify", args);
-        var body = "Trying to spend " + args.value;
-        sendSms(body);
-    }
-    
+//=======================================
+// web3
+//=======================================
+var Web3 = require('web3');
+var web3 = new Web3();
+var providerUrl = 'http://lior.ide.tmp.ether.camp:8555/sandbox/d6234b8d8511f0dc28828657d82c873e7668f9aa'
+web3.setProvider(new web3.providers.HttpProvider(providerUrl));
+web3.eth.defaultAccount = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826";
 
-    function getAddressOf(contractName) {
-      return new Promise(function(resolve, reject) {
+//=======================================
+// namereg
+//=======================================
+var NameReg = require('./nameregDef');
+var namereg = NameReg.getInstance(web3);
+
+//=======================================
+// Oracle
+//=======================================
+var Oracle = require('./oracleDef');
+var oracleInstance;
+var oracleNotify;
+
+function setOracle(address) {
+    console.log("setOracle:" + address);
+    oracleInstance = Oracle.getInstance(web3, address);
+
+    // watch for Notify
+    oracleNotify = oracleInstance.Notify();
+    oracleNotify.watch(function(err, result) {
+        var TAG = "oracleNotify.watch: ";
+        if (err) {
+            console.log(TAG, "ERROR", err);
+            return;
+        }
+        oracleNotified(result.args);
+    });
+}
+
+function oracleNotified(args) {
+    var TAG = "Oracle";
+    console.log(TAG, "Notify", args);
+    var body = "Trying to spend " + args.value;
+    sendSms(body);
+}
+
+
+function getAddressOf(contractName) {
+    return new Promise(function(resolve, reject) {
         namereg.addressOf(contractName, function(err, address) {
             var TAG = "namereg.addressOf:" + contractName + ":";
             if (err) {
@@ -192,22 +192,22 @@ function response500(response, error) {
             console.log(TAG, address);
             resolve(address);
         });
-      });
-    }
+    });
+}
 
 
-    //===============================================
-    // setup
-    //===============================================
-    
-    getAddressOf('Oracle').then(function(address) {
-        setOracle(address);
-    }, abort);
-        
-    function abort(error) {
-        console.log( "ABORT", error);
-        process.exit();
-    }
+//===============================================
+// setup
+//===============================================
+
+getAddressOf('Oracle').then(function(address) {
+    setOracle(address);
+}, abort);
+
+function abort(error) {
+    console.log("ABORT", error);
+    process.exit();
+}
 
 
 // Your accountSid and authToken from twilio.com/user/account
@@ -225,7 +225,7 @@ if (production) {
 
 
 var client = require('twilio')(accountSid, authToken);
- 
+
 function sendSms(body) {
     console.log("sendSms", body);
     client.messages.create({
