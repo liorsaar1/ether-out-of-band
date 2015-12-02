@@ -29,6 +29,10 @@
     // setup
     //===============================================
     function setup() {
+        // disable ui until get ether is pressed
+        document.getElementById('phoneButton').disabled = true;
+        document.getElementById('spendButton').disabled = true;
+        // setup the oracle and wallet
         nameregHelper.getAddressOf('Oracle').then(function(address) {
             setOracle(address);
             return nameregHelper.getAddressOf('Wallet');
@@ -105,6 +109,7 @@
     
     function walletSetPhone(phone) {
         walletInstance.setPhone(phone);
+        document.getElementById('spendButton').disabled = false;
     }
     
     function walletSpend(amount) {
@@ -123,6 +128,7 @@
                 return;
             }
             document.getElementById('walletGetEther').innerText = result;
+            document.getElementById('phoneButton').disabled = false;
         });
     }
         
@@ -215,16 +221,16 @@
     <div id="uiWallet">
         <table>
             <tr>
-                <td><button type="button" onClick="onClickPhone();">Set Phone</button></td>
+                <td><button type="button" onClick="onClickGetEther();">Get Ether</button></td>
+                <td><div id="walletGetEther">You're welcome</div></td>
+            </tr>
+            <tr>
+                <td><button id="phoneButton" type="button" onClick="onClickPhone();">Set Phone</button></td>
                 <td><input type="text" id="phoneValue"/ value="+14158105251"></td>
             </tr>
             <tr>
-                <td><button type="button" onClick="onClickSpend();">Spend</button></td>
+                <td><button id="spendButton" type="button" onClick="onClickSpend();">Spend</button></td>
                 <td><input type="text" id="spendValue" value="12340000000"/></td>
-            </tr>
-            <tr>
-                <td><button type="button" onClick="onClickGetEther();">Get Ether</button></td>
-                <td><div id="walletGetEther">Thank You</div></td>
             </tr>
             <tr>
                 <td>Message: </td>

@@ -36,13 +36,14 @@ contract Wallet is named("Wallet") {
     
     function setPhone(string _phone) {
         log0("setPhone:");
+        Feedback( "Phone set ");
         phone = _phone;
     }
     
     function setOracle(address oracleAddress) {
         log1("set oracle", bytes32(msg.sender));
         oracle = Oracle(oracleAddress);
-        Feedback( "wallet: done: setOracle");
+        Feedback( "Oracle set");
     }
     
     function spend(address _address, uint amount) {
@@ -50,12 +51,12 @@ contract Wallet is named("Wallet") {
         spendAddress = _address;
         spendAmount = amount;
         oracle.notify(phone, amount);
-        Feedback( "wallet: oracle notified of spend ");
+        Feedback( "Out of Band notification sent" );
     }
     
     function spendConfirmed(uint value) {
         log1("spendConfirmed", bytes32(value));
-        Feedback( "spend confirmed");
+        Feedback( "Spend confirmed");
         spendAddress.send(spendAmount);
     }
     

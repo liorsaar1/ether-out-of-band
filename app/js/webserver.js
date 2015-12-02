@@ -37,6 +37,10 @@ function handleRest(request, response) {
 }
 
 function handleStatic(request, response) {
+    if (request.url == "/" || request.url == "/html") {
+        loadStaticFile("/html/wallet.html", response);
+        return;
+    }
     loadStaticFile(request.url, response);
 }
 
@@ -141,7 +145,7 @@ function response500(response, error) {
 //=======================================
 var Web3 = require('web3');
 var web3 = new Web3();
-var providerUrl = 'http://lior.ide.tmp.ether.camp:8555/sandbox/6134a8d957d813bab95d7659babcaece47d0003e'
+var providerUrl = 'http://lior.ide.tmp.ether.camp:8555/sandbox/0c4c2d386490df3c1197adc8ca7dbe65ce36c324'
 web3.setProvider(new web3.providers.HttpProvider(providerUrl));
 web3.eth.defaultAccount = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826";
 
