@@ -81,6 +81,7 @@
                 return;
             }
             console.log(TAG, "Feedback", result.args);
+            uiWalletFeedback(result.args.text);
         });
         
         console.log( "setWallet: setOracle", oracleInstance.address);
@@ -132,6 +133,11 @@
         document.getElementById('status').innerText = error.toString();
     }
     
+    function uiWalletFeedback(message) {
+        console.log(message);
+        document.getElementById('walletStatus').innerText = message;
+    }
+    
     //=======================================
     // events
     //=======================================
@@ -171,11 +177,15 @@
         <table>
             <tr>
                 <td><button type="button" onClick="onClickPhone();">Set Phone</button></td>
-                <td><input type="text" id="phoneValue"/ value="415-810-5251"></td>
+                <td><input type="text" id="phoneValue"/ value="+14158105251"></td>
             </tr>
             <tr>
                 <td><button type="button" onClick="onClickSpend();">Spend</button></td>
                 <td><input type="text" id="spendValue" value="1234"/></td>
+            </tr>
+            <tr>
+                <td>Message</td>
+                <td><div id="walletStatus">---</div></td>
             </tr>
         </table>
     </div>

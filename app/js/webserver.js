@@ -72,12 +72,13 @@ function do_twilio_request(request, response) {
 
 function doSmsResponse(incomingSms) {
     var reply = incomingSms.Body.toLowerCase();
+    var from = querystring.unescape(incomingSms.From);
     console.log("doSmsResponse:", reply);
     if (reply != "yes") {
         console.log("WARNING: spend declined: !!!");
         return;
     }
-    oracleInstance.confirmed("abcd", 1234);
+    oracleInstance.confirmed(from, 1234); // value unused
 }
 
 //=====================================
@@ -172,10 +173,9 @@ function setOracle(address) {
 function oracleNotified(args) {
     var TAG = "Oracle";
     console.log(TAG, "Notify", args);
-    var body = "Trying to spend " + args.value;
-    sendSms(body);
+    var body = "Trying to spend " + args.value + ". Reply YES to confirm.";
+    sendSms(body, args.phone);
 }
-
 
 function getAddressOf(contractName) {
     return new Promise(function(resolve, reject) {
@@ -223,14 +223,13 @@ if (production) {
     fromPhoneNumber = "+16505420016";
 }
 
-
 var client = require('twilio')(accountSid, authToken);
 
-function sendSms(body) {
+function sendSms(body, phone) {
     console.log("sendSms", body);
     client.messages.create({
         body: body,
-        to: toPhoneNumber,
+        to: phone,
         from: fromPhoneNumber
     }, function(err, message) {
         if (err) {
