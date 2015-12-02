@@ -27,6 +27,7 @@ function requestListener(request, response) {
     handleStatic(request, response);
 }
 
+// routes
 function handleRest(request, response) {
     //    console.log("REST: request", request);
     if (request.url == "/twilio/request") {
@@ -74,6 +75,7 @@ function doSmsResponse(incomingSms) {
     var reply = incomingSms.Body.toLowerCase();
     var from = querystring.unescape(incomingSms.From);
     console.log("doSmsResponse:", reply);
+    // only 'yes' is a confirmation
     if (reply != "yes") {
         console.log("WARNING: spend declined: !!!");
         return;
@@ -85,13 +87,13 @@ function doSmsResponse(incomingSms) {
 // util
 //=====================================
 function loadStaticFile(requestUrl, response) {
-    console.log("loadStaticFile", requestUrl);
+    console.log("Load Static File", requestUrl);
     var uri = url.parse(requestUrl).pathname;
     var filename = path.join(process.cwd(), uri);
-    console.log("loadStaticFile", filename);
+    //console.log("loadStaticFile", filename);
 
     fs.exists(filename, function(exists) {
-        console.log("loadStaticFile", "exists", exists);
+        //console.log("loadStaticFile", "exists", exists);
         if (!exists) {
             response404(response, requestUrl);
             return;
@@ -113,6 +115,7 @@ function loadStaticFile(requestUrl, response) {
 }
 
 function response404(response, requestUrl) {
+    console.log("ERROR", "404", requestUrl);
     response.writeHead(404, {
         "Content-Type": "text/plain"
     });
@@ -121,6 +124,7 @@ function response404(response, requestUrl) {
 }
 
 function response500(response, error) {
+    console.log("ERROR", "500", error);
     response.writeHead(500, {
         "Content-Type": "text/plain"
     });
@@ -137,7 +141,7 @@ function response500(response, error) {
 //=======================================
 var Web3 = require('web3');
 var web3 = new Web3();
-var providerUrl = 'http://lior.ide.tmp.ether.camp:8555/sandbox/d6234b8d8511f0dc28828657d82c873e7668f9aa'
+var providerUrl = 'http://lior.ide.tmp.ether.camp:8555/sandbox/6134a8d957d813bab95d7659babcaece47d0003e'
 web3.setProvider(new web3.providers.HttpProvider(providerUrl));
 web3.eth.defaultAccount = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826";
 

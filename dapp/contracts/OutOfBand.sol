@@ -19,6 +19,9 @@ contract Oracle is named("Oracle") {
     
     function confirmed(string phone, uint value) {
         log0("Oracle: confirmed");
+        // if (wallet == null) {
+        //     return;
+        // }
         wallet.spendConfirmed(value);
     }
 }
@@ -27,6 +30,8 @@ contract Wallet is named("Wallet") {
 
     Oracle oracle;
     string phone;
+    address spendAddress;
+    uint spendAmount;
     event Feedback(string text);
     
     function setPhone(string _phone) {
@@ -40,15 +45,18 @@ contract Wallet is named("Wallet") {
         Feedback( "wallet: done: setOracle");
     }
     
-    function spend(uint value) {
-        log1("spend", bytes32(msg.sender));
-        oracle.notify(phone, value);
-        Feedback( "wallet: done: spend ");
+    function spend(address _address, uint amount) {
+        log1("spend", bytes32(_address));
+        spendAddress = _address;
+        spendAmount = amount;
+        oracle.notify(phone, amount);
+        Feedback( "wallet: oracle notified of spend ");
     }
     
     function spendConfirmed(uint value) {
         log1("spendConfirmed", bytes32(value));
         Feedback( "spend confirmed");
+        spendAddress.send(spendAmount);
     }
     
 }

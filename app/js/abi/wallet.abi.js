@@ -21,18 +21,6 @@ function walletAbi() {
         "type": "uint256"
       }
     ],
-    "name": "spend",
-    "outputs": [],
-    "type": "function"
-  },
-  {
-    "constant": false,
-    "inputs": [
-      {
-        "name": "value",
-        "type": "uint256"
-      }
-    ],
     "name": "spendConfirmed",
     "outputs": [],
     "type": "function"
@@ -64,6 +52,22 @@ function walletAbi() {
         "type": "address"
       }
     ],
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
+        "name": "_address",
+        "type": "address"
+      },
+      {
+        "name": "amount",
+        "type": "uint256"
+      }
+    ],
+    "name": "spend",
+    "outputs": [],
     "type": "function"
   },
   {

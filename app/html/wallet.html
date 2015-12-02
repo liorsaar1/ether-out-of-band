@@ -14,14 +14,14 @@
 
     var web3;
     var nameregHelper;
+    var faucetAddress = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826";
 
     function onload() {
         console.log("onload");
         web3 = getWeb3();
         nameregHelper = new NameregHelper(web3);
-        
+
         uiWeb3(web3);
-        
         setup();
     }
     
@@ -34,10 +34,15 @@
             return nameregHelper.getAddressOf('Wallet');
         }, abort).then( function(address) {
             setWallet(address);
-            return setWalletParams();
-        }, abort).then( function(result) {
-            console.log( "#########################################" + result);
+            watchFaucetBalance();
         }, abort);
+    }
+    
+    function watchFaucetBalance() {
+        faucetUpdateBalance(faucetAddress);
+        web3.eth.filter('latest').watch(function() {
+            faucetUpdateBalance(faucetAddress);
+        });        
     }
     
     //=======================================
@@ -83,9 +88,19 @@
             console.log(TAG, "Feedback", result.args);
             uiWalletFeedback(result.args.text);
         });
+        // watch balance
+        walletUpdateBalance(walletInstance.address);
+        web3.eth.filter('latest').watch(function() {
+            walletUpdateBalance(walletInstance.address);
+        });        
         
         console.log( "setWallet: setOracle", oracleInstance.address);
         walletInstance.setOracle(oracleInstance.address); // FIXME - not waiting to be mined
+    }
+    
+    function walletUpdateBalance(walletAddress) {
+        var balance = web3.eth.getBalance(walletAddress).toNumber();
+        document.getElementById('walletBalance').innerText = balance;
     }
     
     function walletSetPhone(phone) {
@@ -93,9 +108,24 @@
     }
     
     function walletSpend(amount) {
-        walletInstance.spend(amount);
+        walletInstance.spend(faucetAddress, amount);
     }
     
+    function walletGetEther() {
+        web3.eth.sendTransaction({
+            from: faucetAddress,
+            value: web3.toWei('1', 'ether'),
+            to: walletInstance.address,
+        }, function(error, result) {
+            console.log( "walletGetEther", error, result);
+            if (error) {
+                document.getElementById('walletGetEther').innerText = error;
+                return;
+            }
+            document.getElementById('walletGetEther').innerText = result;
+        });
+    }
+        
     function setWalletParams() {
         return mine( walletInstance.setOracle, oracleInstance.address ).then( function(result){
             console.log( "2222 " + result);
@@ -111,6 +141,10 @@
         });
     }
 
+    function faucetUpdateBalance(faucetAddress) {
+        var balance = web3.eth.getBalance(faucetAddress).toNumber();
+        document.getElementById('faucetBalance').innerText = balance;
+    }
     
     function abort(error) {
         console.log( "ABORT", error);
@@ -130,7 +164,7 @@
     }
     
     function uiError(error) {
-        document.getElementById('status').innerText = error.toString();
+        document.getElementById('uiStatus').innerText = error.toString();
     }
     
     function uiWalletFeedback(message) {
@@ -150,11 +184,16 @@
         var value = document.getElementById('spendValue').value;
         walletSpend(value);
     }
+    
+    function onClickGetEther() {
+        document.getElementById('walletGetEther').innerText = "Processing...";
+        walletGetEther();
+    }
 
 </script>
 </head>
 <body onload="onload()">
-    <h1>Wallet</h1>
+    <h3>Sendbox</h3>
     <div id="uiWeb3">
         <table>
             <tr>
@@ -171,8 +210,8 @@
             </tr>
         </table>
     </div>
-    </br>
-    
+
+    <h3>Wallet</h3>
     <div id="uiWallet">
         <table>
             <tr>
@@ -181,11 +220,29 @@
             </tr>
             <tr>
                 <td><button type="button" onClick="onClickSpend();">Spend</button></td>
-                <td><input type="text" id="spendValue" value="1234"/></td>
+                <td><input type="text" id="spendValue" value="12340000000"/></td>
             </tr>
             <tr>
-                <td>Message</td>
+                <td><button type="button" onClick="onClickGetEther();">Get Ether</button></td>
+                <td><div id="walletGetEther">Thank You</div></td>
+            </tr>
+            <tr>
+                <td>Message: </td>
                 <td><div id="walletStatus">---</div></td>
+            </tr>
+            <tr>
+                <td>Balance: </td>
+                <td><div id="walletBalance">---</div></td>
+            </tr>
+        </table>
+    </div>
+    
+    <h3>Faucet</h3>
+    <div id="uiFaucet">
+        <table>
+            <tr>
+                <td>Balance: </td>
+                <td><div id="faucetBalance">---</div></td>
             </tr>
         </table>
     </div>
