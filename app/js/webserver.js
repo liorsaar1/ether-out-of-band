@@ -188,30 +188,30 @@ function oracleNotified(args) {
     sendSms(body, args.phone);
 }
 
-function getAddressOf(contractName) {
-    return new Promise(function(resolve, reject) {
-        namereg.addressOf(contractName, function(err, address) {
-            var TAG = "namereg.addressOf:" + contractName + ":";
-            if (err) {
-                console.log(TAG, "ERROR", err);
-                return reject(Error(err));
-            }
-            if (address == 0x0) {
-                console.log(TAG, "NOT FOUND");
-                return reject(Error("Not Found:" + TAG));
-            }
-            console.log(TAG, address);
-            resolve(address);
-        });
-    });
-}
+// function getAddressOf(contractName) {
+//     return new Promise(function(resolve, reject) {
+//         namereg.addressOf(contractName, function(err, address) {
+//             var TAG = "namereg.addressOf:" + contractName + ":";
+//             if (err) {
+//                 console.log(TAG, "ERROR", err);
+//                 return reject(Error(err));
+//             }
+//             if (address == 0x0) {
+//                 console.log(TAG, "NOT FOUND");
+//                 return reject(Error("Not Found:" + TAG));
+//             }
+//             console.log(TAG, address);
+//             resolve(address);
+//         });
+//     });
+// }
 
 
 //===============================================
 // setup
 //===============================================
 
-getAddressOf('Oracle').then(function(address) {
+nameregHelper.getAddressOf('Oracle').then(function(address) {
     setOracle(address);
 }, abort);
 
