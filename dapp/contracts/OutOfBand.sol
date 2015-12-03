@@ -19,10 +19,18 @@ contract Oracle is named("Oracle") {
     
     function confirmed(string phone, uint value) {
         log0("Oracle: confirmed");
-        // if (wallet == null) {
-        //     return;
-        // }
+        if (wallet == 0) {
+            return;
+        }
         wallet.spendConfirmed(value);
+    }
+    
+    function denied(string phone) {
+        log0("Oracle: denied");
+        if (wallet == 0) {
+            return;
+        }
+        wallet.spendDenied();
     }
 }
 
@@ -60,4 +68,8 @@ contract Wallet is named("Wallet") {
         spendAddress.send(spendAmount);
     }
     
+    function spendDenied() {
+        log0("spendDenied");
+        Feedback( "Spend denied");
+    }
 }
