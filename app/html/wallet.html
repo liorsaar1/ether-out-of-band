@@ -10,7 +10,6 @@
 <script type="text/javascript" src="../js/lib/nameregHelper.js"></script>
 <script type="text/javascript">
     console.log("loading js");
-    /*global getWeb3*/
 
     var web3;
     var nameregHelper;
@@ -18,7 +17,9 @@
 
     function onload() {
         console.log("onload");
-        web3 = getWeb3();
+        /*global web3Helper*/
+        var web3Helper = new Web3Helper();
+        web3 = web3Helper.getWeb3();
         nameregHelper = new NameregHelper(web3);
 
         uiWeb3(web3);
