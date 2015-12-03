@@ -6,4 +6,8 @@ function getWeb3() {
     web3.eth.defaultAccount = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826";
     console.log( "web3.js host:", web3.currentProvider.host);
     return web3;
-}    
+}
+
+function test() {
+    
+}
