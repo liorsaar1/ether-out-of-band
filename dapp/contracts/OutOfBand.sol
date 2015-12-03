@@ -19,18 +19,18 @@ contract Oracle is named("Oracle") {
     
     function confirmed(string phone, uint value) {
         log0("Oracle: confirmed");
-        if (wallet == 0) {
-            return;
-        }
+        // if (wallet == 0) {
+        //     return;
+        // }
         wallet.spendConfirmed(value);
     }
     
-    function denied(string phone) {
-        log0("Oracle: denied");
-        if (wallet == 0) {
-            return;
-        }
-        wallet.spendDenied();
+    function lock(string phone) {
+        log0("Oracle: denied - lock");
+        // if (wallet == 0) {
+        //     return;
+        // }
+        wallet.lock();
     }
 }
 
@@ -40,6 +40,7 @@ contract Wallet is named("Wallet") {
     string phone;
     address spendAddress;
     uint spendAmount;
+    bool locked = false;
     event Feedback(string text);
     
     function setPhone(string _phone) {
@@ -56,6 +57,11 @@ contract Wallet is named("Wallet") {
     
     function spend(address _address, uint amount) {
         log1("spend", bytes32(_address));
+        // make sure not locked
+        if (locked) {
+            Feedback("Wallet Locked");
+            return;
+        }
         spendAddress = _address;
         spendAmount = amount;
         oracle.notify(phone, amount);
@@ -68,8 +74,9 @@ contract Wallet is named("Wallet") {
         spendAddress.send(spendAmount);
     }
     
-    function spendDenied() {
-        log0("spendDenied");
-        Feedback( "Spend denied");
+    function lock() {
+        log0("Spend Denied - Lock");
+        Feedback( "Declined - Wallet locked");
+        locked = true;
     }
 }

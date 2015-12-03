@@ -33,6 +33,18 @@ function oracleAbi() {
     "constant": false,
     "inputs": [
       {
+        "name": "phone",
+        "type": "string"
+      }
+    ],
+    "name": "lock",
+    "outputs": [],
+    "type": "function"
+  },
+  {
+    "constant": false,
+    "inputs": [
+      {
         "name": "name",
         "type": "bytes32"
       }

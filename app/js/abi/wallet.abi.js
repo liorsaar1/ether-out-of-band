@@ -83,6 +83,13 @@ function walletAbi() {
     "type": "function"
   },
   {
+    "constant": false,
+    "inputs": [],
+    "name": "lock",
+    "outputs": [],
+    "type": "function"
+  },
+  {
     "anonymous": false,
     "inputs": [
       {

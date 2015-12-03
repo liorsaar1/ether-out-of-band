@@ -77,21 +77,27 @@ function do_twilio_request(request, response) {
 
 function doSmsResponse(incomingSms) {
     var reply = incomingSms.Body.toLowerCase();
-    var from = querystring.unescape(incomingSms.From);
+    var phone = querystring.unescape(incomingSms.From);
     console.log("doSmsResponse:", reply);
     // only 'yes' is a confirmation
-    if (reply != "yes") {
-        console.log("WARNING: spend declined: !!!");
+    if (reply == "yes") {
+        oracleInstance.confirmed(phone, 1234); // value unused
+        console.log("Spend confirmed by user");
         return;
     }
-    oracleInstance.confirmed(from, 1234); // value unused
+    if (reply == "lock") {
+        oracleInstance.lock(phone); 
+        console.log("WARNING: spend declined: account locked!!!");
+        return;
+    }
+    
 }
 
 //=====================================
 // util
 //=====================================
 function loadStaticFile(requestUrl, response) {
-    console.log("Load Static File", requestUrl);
+    //console.log("Load Static File", requestUrl);
     var uri = url.parse(requestUrl).pathname;
     var filename = path.join(process.cwd(), uri);
     //console.log("loadStaticFile", filename);
@@ -145,7 +151,7 @@ function response500(response, error) {
 //=======================================
 var Web3 = require('web3');
 var web3 = new Web3();
-var providerUrl = 'http://lior.ide.tmp.ether.camp:8555/sandbox/0c4c2d386490df3c1197adc8ca7dbe65ce36c324'
+var providerUrl = 'http://lior.ide.tmp.ether.camp:8555/sandbox/7e967b0ebda3f76fb82c842fedbffb289a0ae474'
 web3.setProvider(new web3.providers.HttpProvider(providerUrl));
 web3.eth.defaultAccount = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826";
 
@@ -181,7 +187,7 @@ function setOracle(address) {
 function oracleNotified(args) {
     var TAG = "Oracle";
     console.log(TAG, "Notify", args);
-    var body = "Trying to spend " + args.value + ". Reply YES to confirm.";
+    var body = "Trying to spend " + args.value + ". Reply YES to confirm, LOCK to lock account.";
     sendSms(body, args.phone);
 }
 
