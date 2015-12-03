@@ -155,20 +155,19 @@ var web3 = web3Helper.getWeb3();
 //=======================================
 // namereg
 //=======================================
-var NameregHelper = require('./lib/nameregHelper.js');
-var nameregHelper = new NameregHelper(web3);
+var nameregHelper = require('./lib/nameregHelper.js')(web3);
 var namereg = nameregHelper.getInstance();
 
 //=======================================
 // Oracle
 //=======================================
-var Oracle = require('./oracleDef');
+var oracleHelper = require('./lib/oracleHelper.js')(web3);
 var oracleInstance;
 var oracleNotify;
 
 function setOracle(address) {
     console.log("setOracle:" + address);
-    oracleInstance = Oracle.getInstance(web3, address);
+    oracleInstance = oracleHelper.getInstance(address);
 
     // watch for Notify
     oracleNotify = oracleInstance.Notify();
