@@ -1,9 +1,15 @@
-(function(exports){
+var theThing = function(www) {
+    var cons = www;
+    return {
+        test: function(x) {
+            console.log(cons, x);
+        }
+    }
+}
 
-    // your code goes here
-
-   exports.test = function(message){
-        console.log(message)
-    };
-
-})(typeof exports === 'undefined'? this['Common']={}: exports);
+if (typeof module === 'undefined') {
+    this['Common'] = theThing;
+}
+else {
+    module.exports = theThing;
+}

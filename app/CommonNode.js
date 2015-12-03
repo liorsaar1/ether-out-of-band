@@ -1,2 +1,5 @@
 var Common = require("./Common");
-Common.test("funziona");
+console.log(Common);
+var c = new Common("construct");
+console.log(c);
+c.test("arg");
