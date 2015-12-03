@@ -155,8 +155,9 @@ var web3 = web3Helper.getWeb3();
 //=======================================
 // namereg
 //=======================================
-var NameReg = require('./nameregDef');
-var namereg = NameReg.getInstance(web3);
+var NameregHelper = require('./lib/nameregHelper.js');
+var nameregHelper = new NameregHelper(web3);
+var namereg = nameregHelper.getInstance();
 
 //=======================================
 // Oracle

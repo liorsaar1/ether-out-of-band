@@ -17,9 +17,10 @@
 
     function onload() {
         console.log("onload");
-        /*global web3Helper*/
+        /*global Web3Helper*/
         var web3Helper = new Web3Helper();
         web3 = web3Helper.getWeb3();
+        /*global NameregHelper*/
         nameregHelper = new NameregHelper(web3);
 
         uiWeb3(web3);
