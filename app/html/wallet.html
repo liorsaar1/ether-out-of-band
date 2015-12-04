@@ -8,24 +8,44 @@
 <script type="text/javascript" src="../js/lib/web3Helper.js"></script>
 <script type="text/javascript" src="../js/lib/nameregHelper.js"></script>
 <script type="text/javascript">
-    console.log("loading js");
 
     var web3;
     var nameregHelper;
     var faucetAddress = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826";
+    var host = 'http://out-of-band.on.ether.camp:8080';
 
     function onload() {
         console.log("onload");
+        getSandboxId(host).then( function(sandboxid) {
+            console.log(sandboxid);
+            init(sandboxid);
+        }, abort);
+    }
+    
+    function init(sandboxid) {
         /*global Web3Helper*/
         var web3Helper = new Web3Helper();
-        web3 = web3Helper.getWeb3();
+        web3 = web3Helper.getWeb3(sandboxid);
         /*global NameregHelper*/
         nameregHelper = new NameregHelper(web3);
 
         uiWeb3(web3);
         setup();
     }
-    
+
+    function getSandboxId(host) {
+        return new Promise( function(resolve, reject) {
+            var xmlHttp = new XMLHttpRequest();
+            xmlHttp.onreadystatechange = function() { 
+                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
+                    resolve(xmlHttp.responseText);
+            }
+            var url = host + '/sandboxid'
+            xmlHttp.open("GET", url, true); // true for asynchronous 
+            xmlHttp.send(null);
+        });
+    }
+
     //===============================================
     // setup
     //===============================================
