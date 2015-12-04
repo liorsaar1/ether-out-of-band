@@ -2,11 +2,20 @@
 <html>
 
 <head>
+<script type="text/javascript" src="../vendor/web3.js/dist/web3.js"></script>
 <script type="text/javascript" src="./Common.js"></script>
+<script type="text/javascript" src="./js/lib/web3Helper.js"></script>
 <script type="text/javascript">
+    /*global Common*/
     console.log(">>>>>>", Common);
     var c = new Common("construct");
     c.test( "arg");
+    /*global Web3Helper*/
+    console.log(">>>>>>", Web3Helper);
+    var web3Helper = new Web3Helper();
+    var web3 = web3Helper.getWeb3();
+    console.log(">>>>>>", web3);
+    
 </script>
 <body>
     test common js

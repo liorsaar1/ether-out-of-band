@@ -149,30 +149,25 @@ function response500(response, error) {
 //=======================================
 // web3
 //=======================================
-var Web3 = require('web3');
-console.log(">>>>>>>>>>>>>>>>>>", Web3);
-var web3 = new Web3();
-console.log(">>>>>>>>>>>>>>>>>>????? ", web3);
-var providerUrl = 'http://lior.ide.tmp.ether.camp:8555/sandbox/7e967b0ebda3f76fb82c842fedbffb289a0ae474'
-web3.setProvider(new web3.providers.HttpProvider(providerUrl));
-web3.eth.defaultAccount = "0xcd2a3d9f938e13cd947ec05abc7fe734df8dd826";
+var web3Helper = require('./lib/web3Helper.js')();
+var web3 = web3Helper.getWeb3();
 
 //=======================================
 // namereg
 //=======================================
-var NameReg = require('./nameregDef');
-var namereg = NameReg.getInstance(web3);
+var nameregHelper = require('./lib/nameregHelper.js')(web3);
+var namereg = nameregHelper.getInstance();
 
 //=======================================
 // Oracle
 //=======================================
-var Oracle = require('./oracleDef');
+var oracleHelper = require('./lib/oracleHelper.js')(web3);
 var oracleInstance;
 var oracleNotify;
 
 function setOracle(address) {
     console.log("setOracle:" + address);
-    oracleInstance = Oracle.getInstance(web3, address);
+    oracleInstance = oracleHelper.getInstance(address);
 
     // watch for Notify
     oracleNotify = oracleInstance.Notify();
@@ -193,30 +188,11 @@ function oracleNotified(args) {
     sendSms(body, args.phone);
 }
 
-function getAddressOf(contractName) {
-    return new Promise(function(resolve, reject) {
-        namereg.addressOf(contractName, function(err, address) {
-            var TAG = "namereg.addressOf:" + contractName + ":";
-            if (err) {
-                console.log(TAG, "ERROR", err);
-                return reject(Error(err));
-            }
-            if (address == 0x0) {
-                console.log(TAG, "NOT FOUND");
-                return reject(Error("Not Found:" + TAG));
-            }
-            console.log(TAG, address);
-            resolve(address);
-        });
-    });
-}
-
-
 //===============================================
 // setup
 //===============================================
 
-getAddressOf('Oracle').then(function(address) {
+nameregHelper.getAddressOf('Oracle').then(function(address) {
     setOracle(address);
 }, abort);
 

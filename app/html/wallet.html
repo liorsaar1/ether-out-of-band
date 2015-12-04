@@ -3,14 +3,12 @@
 
 <head>
 <script type="text/javascript" src="../vendor/web3.js/dist/web3.js"></script>
-<script type="text/javascript" src="../js/abi/namereg.abi.js"></script>
-<script type="text/javascript" src="../js/abi/oracle.abi.js"></script>
-<script type="text/javascript" src="../js/abi/wallet.abi.js"></script>
+<script type="text/javascript" src="../js/lib/oracleHelper.js"></script>
+<script type="text/javascript" src="../js/lib/walletHelper.js"></script>
 <script type="text/javascript" src="../js/lib/web3Helper.js"></script>
 <script type="text/javascript" src="../js/lib/nameregHelper.js"></script>
 <script type="text/javascript">
     console.log("loading js");
-    /*global getWeb3*/
 
     var web3;
     var nameregHelper;
@@ -18,7 +16,10 @@
 
     function onload() {
         console.log("onload");
-        web3 = getWeb3();
+        /*global Web3Helper*/
+        var web3Helper = new Web3Helper();
+        web3 = web3Helper.getWeb3();
+        /*global NameregHelper*/
         nameregHelper = new NameregHelper(web3);
 
         uiWeb3(web3);
@@ -52,12 +53,14 @@
     //=======================================
     // Oracle
     //=======================================
+    /*global OracleHelper*/
+    var oracleHelper;
     var oracleInstance;
     var oracleNotify;
     function setOracle(address) {
         console.log( "setOracle:" + address);
-        var abi = oracleAbi();
-        oracleInstance = web3.eth.contract(abi).at(address);
+        oracleHelper = new OracleHelper(web3);
+        oracleInstance = oracleHelper.getInstance(address);
         
         // watch for Notify
         oracleNotify = oracleInstance.Notify();
@@ -74,12 +77,14 @@
     //=======================================
     // Wallet
     //=======================================
+    /*global WalletHelper*/
+    var walletHelper;
     var walletInstance;
     var walletFeedback;
     function setWallet(address) {
         console.log( "setWallet:", address);
-        var abi = walletAbi();
-        walletInstance = web3.eth.contract(abi).at(address);
+        walletHelper = new WalletHelper(web3);
+        walletInstance = walletHelper.getInstance(address);
         
         // watch for Feedback
         walletFeedback = walletInstance.Feedback();
