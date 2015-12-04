@@ -3,12 +3,10 @@ https://github.com/liorsaar1/ether-out-of-band/wiki/Out-of-Band-notification-on-
 
 ### Installation for ether.camp IDE
 1. Open dapp/contracts/OutOfBand.sol and 'Run Active Contract'
-1. Copy the sandbox id and paste it in 
-  * app/js/lib/web3Helper.js
-  * app/js/webserver.js (var providerUrl)
+1. Copy the sandbox id
 1. In a terminal
    * ```cd ~/workspace/app```
-   * ```node js/webserver.js```
+   * ```node js/webserver.js $SANDBOXID$```
 1. In a browser, open http://out-of-band.on.ether.camp:8080/
 
 ### Demo

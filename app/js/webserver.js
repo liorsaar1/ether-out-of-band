@@ -6,6 +6,13 @@ var querystring = require('querystring');
 
 const PORT = 8080;
 
+
+if (process.argv[2] == null) {
+    console.log( "Sandbox ID must be provided as first argument");
+    process.exit();
+}
+setSandboxId(process.argv[2]);
+
 //=====================================
 // Server
 //=====================================
@@ -32,6 +39,9 @@ function handleRest(request, response) {
     //    console.log("REST: request", request);
     if (request.url == "/twilio/request") {
         return do_twilio_request(request, response);
+    }
+    if (request.url == "/sandboxid") {
+        return do_sandboxid_request(request, response);
     }
     return false;
 }
@@ -72,6 +82,11 @@ function do_twilio_request(request, response) {
         //console.log("decodedBody:", decodedBody.Body);
         doSmsResponse(decodedBody);
     });
+    return true;
+}
+
+function do_sandboxid_request(request, response) {
+    response.end(getSandboxId());
     return true;
 }
 
@@ -142,7 +157,16 @@ function response500(response, error) {
     response.end();
 }
 
-
+//=======================================
+// sandbox
+//=======================================
+var sandboxId;
+function setSandboxId(id) {
+    sandboxId = id;
+}
+function getSandboxId() {
+    return sandboxId;
+}
 
 
 
@@ -150,7 +174,7 @@ function response500(response, error) {
 // web3
 //=======================================
 var web3Helper = require('./lib/web3Helper.js')();
-var web3 = web3Helper.getWeb3();
+var web3 = web3Helper.getWeb3(getSandboxId());
 
 //=======================================
 // namereg
