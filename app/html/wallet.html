@@ -19,7 +19,9 @@
         getSandboxId(host).then( function(sandboxid) {
             console.log(sandboxid);
             init(sandboxid);
-        }, abort);
+        }, function (error) {
+            uiWeb3Status(error);
+        });
     }
     
     function init(sandboxid) {
@@ -32,15 +34,26 @@
         uiWeb3(web3);
         setup();
     }
-
+    
     function getSandboxId(host) {
+        var url = host + '/sandboxid';
+        return xmlHttpGet(url);
+    }
+
+    function xmlHttpGet(url) {
         return new Promise( function(resolve, reject) {
             var xmlHttp = new XMLHttpRequest();
-            xmlHttp.onreadystatechange = function() { 
-                if (xmlHttp.readyState == 4 && xmlHttp.status == 200)
-                    resolve(xmlHttp.responseText);
+            xmlHttp.onreadystatechange = function() {
+                console.log(xmlHttp.readyState, xmlHttp.status);
+                if (xmlHttp.readyState == 4) { 
+                    // success
+                    if (xmlHttp.status == 200) {
+                        resolve(xmlHttp.responseText);
+                    }
+                    // error
+                    reject (new Error("Server unreachable " + xmlHttp.status));
+                }
             }
-            var url = host + '/sandboxid'
             xmlHttp.open("GET", url, true); // true for asynchronous 
             xmlHttp.send(null);
         });
@@ -192,6 +205,11 @@
         //console.log(web3);
         document.getElementById('uiSandbox').innerText =  web3.currentProvider.host;
         document.getElementById('uiStatus').innerText = "connected";
+        document.getElementById('getEtherButton').disabled = false;
+    }
+    function uiWeb3Status(status) {
+        //console.log(web3);
+        document.getElementById('uiStatus').innerText = status;
     }
     
     function uiError(error) {
@@ -224,19 +242,24 @@
 </script>
 </head>
 <body onload="onload()">
+    <h3>Out of Band Notification demo</h3>
+    <p1>Create an out-of-band notification (via SMS) when a contract tries to spend, and receive a confirmation from the user. 
+    </p1><br>
+    <a href="https://github.com/liorsaar1/ether-out-of-band/wiki/Out-of-Band-notification-on-Ethereum" target="_blank">Documentation</a>
+    
     <h3>Sandbox</h3>
     <div id="uiWeb3">
         <table>
             <tr>
                 <td>Sandbox: </td>
                 <td>
-                    <div id="uiSandbox">---</div>
+                    <div id="uiSandbox">Unknown</div>
                 </td>
             </tr>
             <tr>
                 <td>Status: </td>
                 <td>
-                    <div id="uiStatus">---</div>
+                    <div id="uiStatus">Unknown</div>
                 </td>
             </tr>
         </table>
@@ -246,15 +269,15 @@
     <div id="uiWallet">
         <table>
             <tr>
-                <td><button type="button" onClick="onClickGetEther();">1. Get Ether</button></td>
+                <td><button id="getEtherButton" type="button" onClick="onClickGetEther();" disabled="true">1. Get Ether</button></td>
                 <td><div id="walletGetEther">You're welcome</div></td>
             </tr>
             <tr>
-                <td><button id="phoneButton" type="button" onClick="onClickPhone();">2. Set Phone</button></td>
+                <td><button id="phoneButton" type="button" onClick="onClickPhone();" disabled="true">2. Set Phone</button></td>
                 <td><input type="text" id="phoneValue"/ value="+14158105251"></td>
             </tr>
             <tr>
-                <td><button id="spendButton" type="button" onClick="onClickSpend();">3. Spend</button></td>
+                <td><button id="spendButton" type="button" onClick="onClickSpend();" disabled="true">3. Spend</button></td>
                 <td><input type="text" id="spendValue" value="12340000000"/></td>
             </tr>
             <tr>
