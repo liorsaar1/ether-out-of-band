@@ -24,5 +24,7 @@ https://github.com/liorsaar1/ether-out-of-band/wiki/Out-of-Band-notification-on-
   * The wallet should be locked now.
 1. Click 'Spend'
   * A 'Wallet Locked' warning is displayed, balance unchanged
+1. Click 'Unlock'
+  * A 'Wallet Unlocked' message is displayed, Spend is enabled again
   
   
