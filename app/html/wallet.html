@@ -154,6 +154,10 @@
         walletInstance.spend(faucetAddress, amount);
     }
     
+    function walletUnlock() {
+        walletInstance.unlock();
+    }
+    
     function walletGetEther() {
         web3.eth.sendTransaction({
             from: faucetAddress,
@@ -238,14 +242,21 @@
         document.getElementById('walletGetEther').innerText = "Processing...";
         walletGetEther();
     }
+    
+    function onClickUnlock() {
+        walletUnlock();
+    }
+    
 
 </script>
 </head>
 <body onload="onload()">
     <h3>Out of Band Notification demo</h3>
-    <p1>Create an out-of-band notification (via SMS) when a contract tries to spend, and receive a confirmation from the user. 
-    </p1><br>
+    <a href="https://github.com/liorsaar1/ether-out-of-band/blob/master/README.md" target="_blank">Installation</a> <br>
     <a href="https://github.com/liorsaar1/ether-out-of-band/wiki/Out-of-Band-notification-on-Ethereum" target="_blank">Documentation</a>
+    <br>
+    <p1>Create an out-of-band notification (via SMS) when a contract tries to spend, and receive a confirmation from the user. 
+    </p1>
     
     <h3>Sandbox</h3>
     <div id="uiWeb3">
@@ -281,8 +292,12 @@
                 <td><input type="text" id="spendValue" value="12340000000"/></td>
             </tr>
             <tr>
-                <td>Message: </td>
-                <td><div id="walletStatus">---</div></td>
+                <td><button id="unlockButton" type="button" onClick="onClickUnlock();">Unlock</button></td>
+                <td> </td>
+            </tr>
+            <tr>
+                <td>Status: </td>
+                <td><div id="walletStatus"> </div></td>
             </tr>
             <tr>
                 <td>Balance: </td>

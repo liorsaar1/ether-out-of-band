@@ -106,6 +106,13 @@ contract Wallet is named("Wallet") {
         locked = true;
     }
     
+    function unlock() {
+        log0("Unlock");
+        // unlock it
+        Feedback( "Unlocked");
+        locked = false;
+    }
+    
     function isKnownOracle(address msgSender) returns (bool){
         if (oracle == msgSender ) {
             return true;

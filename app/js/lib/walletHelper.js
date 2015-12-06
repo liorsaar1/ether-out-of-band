@@ -25,6 +25,18 @@ function getExport() {
             }, {
                 "constant": false,
                 "inputs": [{
+                    "name": "msgSender",
+                    "type": "address"
+                }],
+                "name": "isKnownOracle",
+                "outputs": [{
+                    "name": "",
+                    "type": "bool"
+                }],
+                "type": "function"
+            }, {
+                "constant": false,
+                "inputs": [{
                     "name": "value",
                     "type": "uint256"
                 }],
@@ -51,6 +63,12 @@ function getExport() {
                     "name": "",
                     "type": "address"
                 }],
+                "type": "function"
+            }, {
+                "constant": false,
+                "inputs": [],
+                "name": "unlock",
+                "outputs": [],
                 "type": "function"
             }, {
                 "constant": false,
