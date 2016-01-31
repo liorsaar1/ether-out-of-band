@@ -6,7 +6,9 @@ https://github.com/liorsaar1/ether-out-of-band/wiki/Out-of-Band-notification-on-
 1. Copy the sandbox id
 1. In a terminal
    * ```cd ~/workspace/app```
-   * ```node js/webserver.js $SANDBOXID$```
+   * ```npm install web3```
+   * ```npm install twilio```
+   *```node js/webserver.js $SANDBOXID$```
 1. In a browser, open http://out-of-band.on.ether.camp:8080/
 
 ### Demo
